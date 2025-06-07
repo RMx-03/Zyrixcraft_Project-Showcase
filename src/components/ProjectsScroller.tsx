@@ -7,78 +7,74 @@ import { projects } from '../data/projects';
 const ProjectsScroller: React.FC = () => {
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Reset scroll position on mount to fix refresh issues
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
 
-  // Transform scroll progress to project index
-  const projectIndex = useTransform(
-    scrollYProgress,
-    [0, 0.17, 0.33, 0.50, 0.67, 0.83, 1],
-    [0, 1, 2, 3, 4, 5, 5]
-  );
-
+  // Project switching
   useEffect(() => {
-    const unsubscribe = projectIndex.onChange((latest) => {
-      const index = Math.max(0, Math.min(Math.floor(latest + 0.1), projects.length - 1));
-      if (index !== activeProjectIndex) {
-        setActiveProjectIndex(index);
+    const unsubscribe = scrollYProgress.onChange((progress) => {
+      const sectionSize = 1 / projects.length;
+      const newIndex = Math.min(
+        Math.floor(progress / sectionSize), 
+        projects.length - 1
+      );
+      
+      if (newIndex !== activeProjectIndex) {
+        setActiveProjectIndex(newIndex);
       }
     });
 
     return () => unsubscribe();
-  }, [projectIndex, activeProjectIndex]);
+  }, [scrollYProgress, activeProjectIndex]);
+
+  // Reset scroll
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleDotClick = (index: number) => {
+    const element = document.getElementById(`project-section-${index}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
-      {/* Split Layout Background */}
+      {/* Background */}
       <SplitLayout currentProject={projects[activeProjectIndex]} />
 
-      {/* Scrolling Container */}
+      {/* Main container */}
       <div 
         ref={containerRef}
         className="relative z-20"
         style={{ height: `${projects.length * 100}vh` }}
       >
-        {/* Fixed Center Card Container */}
-        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-20">
-          <div className="pointer-events-none z-20 w-full max-w-md px-4">
-            {projects.map((project, index) => (
-              <div
-                key={project.id}
-                className={`absolute inset-0 transition-opacity duration-500 ${
-                  index === activeProjectIndex ? 'opacity-100' : 'opacity-0'
-                }`}
-              >
-                <ProjectCard
-                  project={project}
-                  isActive={index === activeProjectIndex}
-                />
-              </div>
-            ))}
+        {/* Active card */}
+        <div className="fixed inset-0 flex items-center justify-center z-20">
+          <div className="w-full max-w-md px-4">
+            <ProjectCard
+              key={`active-${activeProjectIndex}`}
+              project={projects[activeProjectIndex]}
+              isActive={true}
+            />
           </div>
         </div>
 
-        {/* Invisible Scroll Sections */}
-        {projects.map((project, index) => (
+        {/* Scroll sections */}
+        {projects.map((_, index) => (
           <div
-            key={project.id}
-            id={`project-${index}`}
-            className="h-screen flex items-center justify-center"
+            key={`section-${index}`}
+            id={`project-section-${index}`}
+            className="h-screen"
             style={{ minHeight: '100vh' }}
-          >
-            {/* This div helps with scroll detection but is invisible */}
-            <div className="w-full h-full opacity-0" />
-          </div>
+          />
         ))}
 
-        {/* Scroll Indicator */}
+        {/* Dot nav */}
         <motion.div
           className="fixed right-8 top-1/3 -translate-y-1/2 z-60"
           initial={{ opacity: 0, x: 20 }}
@@ -88,13 +84,8 @@ const ProjectsScroller: React.FC = () => {
           <div className="bg-black/70 backdrop-blur-md px-3 py-4 flex flex-col gap-4">
             {projects.map((_, index) => (
               <motion.button
-                key={index}
-                onClick={() => {
-                  const targetElement = document.getElementById(`project-${index}`);
-                  if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
+                key={`dot-${index}`}
+                onClick={() => handleDotClick(index)}
                 className={`w-3 h-3 transition-all duration-300 cursor-pointer ${
                   index === activeProjectIndex 
                     ? 'bg-orange-500' 
@@ -107,17 +98,17 @@ const ProjectsScroller: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Progress Bar */}
+        {/* Progress bar */}
         <motion.div
           className="fixed bottom-0 left-0 h-1 bg-gradient-to-r from-orange-500 to-orange-400 z-60"
           style={{
-            width: "50vw",
-            scaleX: useTransform(scrollYProgress, [0, 1], [0, 1]),
+            width: "calc(50vw - 1px)",
+            scaleX: scrollYProgress,
             transformOrigin: "0%"
           }}
         />
 
-        {/* Floating Action Hint */}
+        {/* Scroll hint */}
         <motion.div
           className="fixed bottom-8 left-8 z-60"
           initial={{ opacity: 0, y: 20 }}

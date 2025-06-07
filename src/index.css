@@ -27,13 +27,8 @@
   .hover-glow {
     @apply transition-all duration-300 hover:shadow-2xl hover:shadow-white/20;
   }
-  
-  .scroll-smooth {
-    scroll-behavior: smooth;
-  }
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -51,7 +46,6 @@
   background: #555;
 }
 
-/* Smooth transitions */
 * {
   @apply transition-colors duration-200;
 }

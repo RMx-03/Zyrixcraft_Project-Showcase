@@ -27,7 +27,7 @@ const Navbar: React.FC = () => {
             </h1>
           </motion.div>
 
-          {/* Hamburger Menu */}
+          {/* Menu button */}
           <motion.button
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Menu overlay */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
                 </motion.a>
               ))}
               
-              {/* Become A Client Button */}
+              {/* Client link */}
               <motion.a
                 href="https://zyrixcraft.in/"
                 target="_blank"

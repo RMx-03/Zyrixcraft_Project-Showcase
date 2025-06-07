@@ -14,7 +14,7 @@ const SplitLayout: React.FC<SplitLayoutProps> = ({ currentProject }) => {
   return (
     <>
       <div className="fixed inset-0 flex z-0">
-        {/* Left Half - Dark Side */}
+        {/* Left half */}
         <div className="w-1/2 bg-zyrix-dark flex flex-col justify-center px-12 lg:px-16 relative z-10">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -22,7 +22,7 @@ const SplitLayout: React.FC<SplitLayoutProps> = ({ currentProject }) => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="space-y-8 relative z-10"
           >
-            {/* Main Title */}
+            {/* Title */}
             <div>
               <h1 className="text-4xl lg:text-6xl xl:text-7xl font-display font-bold text-white leading-tight">
                 We Transform
@@ -35,7 +35,7 @@ const SplitLayout: React.FC<SplitLayoutProps> = ({ currentProject }) => {
               </h1>
             </div>
 
-            {/* Subheading */}
+            {/* Subtitle */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -46,7 +46,7 @@ const SplitLayout: React.FC<SplitLayoutProps> = ({ currentProject }) => {
               </p>
             </motion.div>
 
-            {/* CTA Button */}
+            {/* CTA */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -84,7 +84,7 @@ const SplitLayout: React.FC<SplitLayoutProps> = ({ currentProject }) => {
           </motion.div>
         </div>
 
-        {/* Right Half - Dynamic Project Display */}
+        {/* Right half */}
         <div className="w-1/2 relative overflow-hidden">
           <motion.div
             key={currentProject.id}
@@ -100,7 +100,7 @@ const SplitLayout: React.FC<SplitLayoutProps> = ({ currentProject }) => {
             />
             <div className="absolute inset-0 bg-gradient-to-l from-transparent via-black/20 to-black/40" />
             
-            {/* Project Title Overlay */}
+            {/* Project overlay */}
             <div className="absolute bottom-8 left-8 right-8">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -128,7 +128,7 @@ const SplitLayout: React.FC<SplitLayoutProps> = ({ currentProject }) => {
             </div>
           </motion.div>
 
-          {/* Decorative Grid */}
+          {/* Grid */}
           <div className="absolute inset-0 opacity-10">
             <div className="grid grid-cols-12 grid-rows-12 h-full">
               {Array.from({ length: 144 }, (_, i) => (
