@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Phone, MessageCircle } from 'lucide-react';
 
@@ -7,7 +7,7 @@ interface LetsTalkModalProps {
   onClose: () => void;
 }
 
-const LetsTalkModal: React.FC<LetsTalkModalProps> = ({ isOpen, onClose }) => {
+const LetsTalkModal: React.FC<LetsTalkModalProps> = React.memo(({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,19 +15,56 @@ const LetsTalkModal: React.FC<LetsTalkModalProps> = ({ isOpen, onClose }) => {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Memoize contact options to prevent re-creation
+  const contactOptions = useMemo(() => [
+    {
+      icon: Mail,
+      label: 'Email',
+      value: 'hello@zyrixcraft.com',
+      color: 'text-blue-400'
+    },
+    {
+      icon: Phone,
+      label: 'Phone',
+      value: '+1 (555) 123-4567',
+      color: 'text-green-400'
+    },
+    {
+      icon: MessageCircle,
+      label: 'Schedule',
+      value: 'Book a call',
+      color: 'text-purple-400'
+    }
+  ], []);
+
+  // Memoize project options
+  const projectOptions = useMemo(() => [
+    { value: '', label: 'Select a project type' },
+    { value: 'web-development', label: 'Web Development' },
+    { value: 'mobile-app', label: 'Mobile App' },
+    { value: 'ui-ux-design', label: 'UI/UX Design' },
+    { value: 'branding', label: 'Branding' },
+    { value: 'other', label: 'Other' }
+  ], []);
+
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission here
     console.log('Form submitted:', formData);
     onClose();
-  };
+  }, [formData, onClose]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
-  };
+  }, []);
+
+  const stopPropagation = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
 
   return (
     <AnimatePresence>
@@ -45,7 +82,7 @@ const LetsTalkModal: React.FC<LetsTalkModalProps> = ({ isOpen, onClose }) => {
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="glass-morph rounded-2xl p-8 w-full max-w-2xl relative"
-            onClick={(e) => e.stopPropagation()}
+            onClick={stopPropagation}
           >
             {/* Close Button */}
             <button
@@ -67,27 +104,18 @@ const LetsTalkModal: React.FC<LetsTalkModalProps> = ({ isOpen, onClose }) => {
 
             {/* Contact Options */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <div className="flex items-center space-x-3 p-4 rounded-lg bg-white/5">
-                <Mail className="w-5 h-5 text-blue-400" />
-                <div>
-                  <p className="text-sm text-gray-400">Email</p>
-                  <p className="text-white">hello@zyrixcraft.com</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3 p-4 rounded-lg bg-white/5">
-                <Phone className="w-5 h-5 text-green-400" />
-                <div>
-                  <p className="text-sm text-gray-400">Phone</p>
-                  <p className="text-white">+1 (555) 123-4567</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3 p-4 rounded-lg bg-white/5">
-                <MessageCircle className="w-5 h-5 text-purple-400" />
-                <div>
-                  <p className="text-sm text-gray-400">Schedule</p>
-                  <p className="text-white">Book a call</p>
-                </div>
-              </div>
+              {contactOptions.map((option, index) => {
+                const Icon = option.icon;
+                return (
+                  <div key={index} className="flex items-center space-x-3 p-4 rounded-lg bg-white/5">
+                    <Icon className={`w-5 h-5 ${option.color}`} />
+                    <div>
+                      <p className="text-sm text-gray-400">{option.label}</p>
+                      <p className="text-white">{option.value}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Form */}
@@ -134,12 +162,11 @@ const LetsTalkModal: React.FC<LetsTalkModalProps> = ({ isOpen, onClose }) => {
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-white/30 transition-colors"
                   required
                 >
-                  <option value="">Select a project type</option>
-                  <option value="web-development">Web Development</option>
-                  <option value="mobile-app">Mobile App</option>
-                  <option value="ui-ux-design">UI/UX Design</option>
-                  <option value="branding">Branding</option>
-                  <option value="other">Other</option>
+                  {projectOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -170,6 +197,8 @@ const LetsTalkModal: React.FC<LetsTalkModalProps> = ({ isOpen, onClose }) => {
       )}
     </AnimatePresence>
   );
-};
+});
+
+LetsTalkModal.displayName = 'LetsTalkModal';
 
 export default LetsTalkModal; 
