@@ -20,11 +20,22 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: true,
-        drop_debugger: true
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug']
       }
-    }
+    },
+    assetsInlineLimit: 4096,
+    chunkSizeWarningLimit: 1000
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'framer-motion', 'lucide-react']
+  },
+  preview: {
+    port: 4173,
+    host: true
+  },
+  server: {
+    port: 5173,
+    host: true
   }
 })

@@ -1,13 +1,33 @@
 {
   "name": "zyrixcraft-showcase",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "ZyrixCraft - Digital Agency Portfolio Showcase",
+  "author": "ZyrixCraft",
+  "license": "MIT",
+  "homepage": "https://zyrixcraft-showcase.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zyrixcraft/showcase"
+  },
+  "keywords": [
+    "digital-agency",
+    "portfolio",
+    "react",
+    "typescript",
+    "vite",
+    "framer-motion"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --fix",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "build:analyze": "npm run build && npx vite-bundle-analyzer dist/stats.html",
+    "deploy": "npm run build && npm run preview"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.16",
@@ -32,5 +52,9 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }

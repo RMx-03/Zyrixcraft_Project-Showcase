@@ -47,12 +47,11 @@ const LetsTalkModal: React.FC<LetsTalkModalProps> = React.memo(({ isOpen, onClos
     { value: 'other', label: 'Other' }
   ], []);
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    // Handle form submission logic here
     onClose();
-  }, [formData, onClose]);
+  };
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
