@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Loader from './components/Loader';
 import ErrorBoundary from './components/ErrorBoundary';
+import MobileLayout from './components/MobileLayout';
+import { useResponsive } from './hooks/useResponsive';
 import './index.css';
 
 // Lazy load the heavy ProjectsScroller component
@@ -10,6 +12,7 @@ const ProjectsScroller = lazy(() => import('./components/ProjectsScroller'));
 
 const App: React.FC = React.memo(() => {
   const [isLoading, setIsLoading] = useState(true);
+  const { isMobile } = useResponsive();
 
   useEffect(() => {
     // Simulate app initialization time + loader duration
@@ -24,6 +27,16 @@ const App: React.FC = React.memo(() => {
     return <Loader />;
   }
 
+  // Mobile Layout
+  if (isMobile) {
+    return (
+      <ErrorBoundary>
+        <MobileLayout />
+      </ErrorBoundary>
+    );
+  }
+
+  // Desktop Layout (unchanged)
   return (
     <ErrorBoundary>
       <div className="relative min-h-screen bg-black overflow-x-hidden" style={{ pointerEvents: 'auto' }}>
