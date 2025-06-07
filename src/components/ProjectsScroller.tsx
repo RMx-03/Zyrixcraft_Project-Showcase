@@ -5,10 +5,13 @@ import SplitLayout from './SplitLayout';
 import { projects } from '../data/projects';
 
 // Throttle function for performance
-const throttle = (func: Function, delay: number) => {
+const throttle = <T extends unknown[]>(
+  func: (...args: T) => void, 
+  delay: number
+) => {
   let timeoutId: number | undefined;
   let lastExecTime = 0;
-  return function (...args: any[]) {
+  return function (...args: T) {
     const currentTime = Date.now();
     
     if (currentTime - lastExecTime > delay) {
