@@ -64,7 +64,7 @@ const App: React.FC = React.memo(() => {
         >
           <button
             onClick={() => {
-              window.open('https://zyrixcraft.in/', '_blank', 'noopener,noreferrer');
+              window.open('https://zyrixcraft.com/', '_blank', 'noopener,noreferrer');
             }}
             style={{
               backgroundColor: 'rgba(0, 0, 0, 0.7)',
